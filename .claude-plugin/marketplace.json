@@ -1,0 +1,18 @@
+{
+  "name": "corta",
+  "owner": {
+    "name": "Marcos Tulio"
+  },
+  "metadata": {
+    "description": "Corta: baixe, transcreva, traduza e corte vídeos no seu Mac, com o Claude cuidando da instalação.",
+    "version": "0.9.0"
+  },
+  "plugins": [
+    {
+      "name": "corta",
+      "source": "./plugins/corta",
+      "description": "Abre o Corta no navegador (localhost): biblioteca de vídeos, player com transcrição e editor de cortes. Tudo roda no seu Mac.",
+      "version": "0.9.0"
+    }
+  ]
+}
