@@ -1,6 +1,6 @@
 {
   "name": "corta",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "Corta: baixe, transcreva, traduza e corte vídeos no seu Mac. Abre uma tela no navegador (localhost) e o Claude cuida da instalação.",
   "author": {
     "name": "Marcos Tulio"

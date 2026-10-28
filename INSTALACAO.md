@@ -8,7 +8,7 @@ O Corta baixa, transcreve, traduz e corta vídeos no seu Mac. Ele abre uma tela 
 
 Você precisa de:
 
-- **Um Mac com chip Apple** (M1, M2, M3, M4 ou mais novo). Para conferir: menu  → **Sobre Este Mac** → linha "Chip".
+- **Um Mac com chip Apple** (M1, M2, M3, M4 ou mais novo). Para conferir: clique na maçã no canto superior esquerdo da tela → **Sobre Este Mac** → linha "Chip".
 - **macOS 14 (Sonoma) ou mais novo.**
 - **Uns 5 GB livres no disco.**
 - **Uma assinatura do Claude** (Pro ou Max). A tradução e os destaques usam a sua assinatura, sem custo extra.
