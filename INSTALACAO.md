@@ -4,6 +4,8 @@ O Corta baixa, transcreve, traduz e corta vídeos no seu Mac. Ele abre uma tela 
 
 **Prefere ver com imagens?** Acesse o passo a passo em **corta-site.marcostulio.workers.dev/instalar**. Travou em algum passo? Chame no WhatsApp: **(31) 97131-5886**.
 
+**Usa Windows?** Este manual é para Mac. No Windows (versão beta), siga o passo a passo em **corta-site.marcostulio.workers.dev/instalar/?sistema=windows**: ele usa o PowerShell, instala o Git e não pede senha de administrador.
+
 ---
 
 ## Antes de começar

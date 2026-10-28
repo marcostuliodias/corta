@@ -93,3 +93,26 @@ function Baixar($url, $destino) {
   Move-Item -Force $parcial $destino
   return $true
 }
+
+# Pedido ao servidor de licença que sempre devolve o texto da resposta, mesmo quando é um erro
+# (o Invoke-WebRequest do PowerShell 5.1 joga a resposta fora quando o código não é 200).
+Add-Type -AssemblyName System.Net.Http
+function Pedir-Texto($url, $campos = $null) {
+  $cliente = New-Object System.Net.Http.HttpClient
+  $cliente.Timeout = [TimeSpan]::FromSeconds(30)
+  try {
+    if ($campos) {
+      $pares = New-Object 'System.Collections.Generic.List[System.Collections.Generic.KeyValuePair[string,string]]'
+      foreach ($k in $campos.Keys) { $pares.Add((New-Object 'System.Collections.Generic.KeyValuePair[string,string]' -ArgumentList $k, ([string]$campos[$k]))) }
+      # A vírgula impede o PowerShell de abrir a lista em vários argumentos.
+      $conteudo = New-Object System.Net.Http.FormUrlEncodedContent -ArgumentList (,$pares)
+      $resposta = $cliente.PostAsync($url, $conteudo).GetAwaiter().GetResult()
+    } else {
+      $resposta = $cliente.GetAsync($url).GetAwaiter().GetResult()
+    }
+    $bytes = $resposta.Content.ReadAsByteArrayAsync().GetAwaiter().GetResult()
+    return [pscustomobject]@{ Codigo = [int]$resposta.StatusCode; Texto = [System.Text.Encoding]::UTF8.GetString($bytes).Trim() }
+  } catch {
+    return [pscustomobject]@{ Codigo = 0; Texto = $_.Exception.Message }
+  } finally { $cliente.Dispose() }
+}

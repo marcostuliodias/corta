@@ -86,17 +86,9 @@ function Passo-Licenca($email, $transacao) {
   if (-not $email -or -not $transacao) { Falhou ERRO_LICENCA_DADOS 20 }
   Write-Output 'Ativando a licença neste computador…'
   $corpo = @{ email = $email; transacao = $transacao; maquina = (Maquina-Id); nome_maquina = $env:COMPUTERNAME }
-  try {
-    $resposta = (Invoke-WebRequest -Uri "$LICENCA_URL/api/ativar?formato=texto" -Method Post -Body $corpo -UseBasicParsing -TimeoutSec 30).Content
-  } catch {
-    $resposta = $null
-    if ($_.Exception.Response) {
-      $leitor = New-Object System.IO.StreamReader($_.Exception.Response.GetResponseStream())
-      $resposta = $leitor.ReadToEnd()
-    }
-    if (-not $resposta) { Write-Output $_.Exception.Message; Falhou ERRO_LICENCA_INTERNET 21 }
-  }
-  $resposta = ([string]$resposta).Trim()
+  $r = Pedir-Texto "$LICENCA_URL/api/ativar?formato=texto" $corpo
+  if ($r.Codigo -eq 0) { Write-Output $r.Texto; Falhou ERRO_LICENCA_INTERNET 21 }
+  $resposta = $r.Texto
   if ($resposta.StartsWith('OK ')) {
     $token = $resposta.Substring(3).Trim()
     $json = @{ token = $token; ativado_em = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds() } | ConvertTo-Json -Compress
@@ -114,10 +106,13 @@ function Passo-Pacote {
   if (Modo-Fonte) { Write-Output 'Código-fonte: o programa já está aqui.'; Write-Output 'PASSO_OK pacote'; return }
   $token = Token-Licenca
   if (-not $token) { Falhou ERRO_FALTA_LICENCA 24 }
-  try {
-    $info = (Invoke-WebRequest -Uri "$LICENCA_URL/api/pacote/info?formato=texto&plataforma=windows&token=$token" -UseBasicParsing -TimeoutSec 30).Content.Trim()
-  } catch { Write-Output $_.Exception.Message; Falhou ERRO_PACOTE_NEGADO 25 }
-  if (-not $info.StartsWith('OK ')) { Write-Output $info; Falhou ERRO_PACOTE_NEGADO 25 }
+  $r = Pedir-Texto "$LICENCA_URL/api/pacote/info?formato=texto&plataforma=windows&token=$token"
+  if ($r.Codigo -eq 0) { Write-Output $r.Texto; Falhou ERRO_LICENCA_INTERNET 21 }
+  $info = $r.Texto
+  if (-not $info.StartsWith('OK ')) {
+    try { Write-Output ($info | ConvertFrom-Json).mensagem } catch { Write-Output $info }
+    Falhou ERRO_PACOTE_NEGADO 25
+  }
   $partes = $info -split ' '
   $versao = $partes[1]; $tamanho = [long]$partes[2]
   $destino = Join-Path $DADOS "app\$versao"
