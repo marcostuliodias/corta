@@ -45,7 +45,7 @@ bash "$S/instalar.sh" licenca "<email>" "<código>"
 |---|---|
 | `PASSO_OK licenca` | Siga em frente. |
 | `ERRO_LICENCA_NAO_ENCONTRADA` | Mostre a mensagem e peça para conferir o e-mail e o código. Se a compra acabou de ser feita, espere 2 minutos e tente de novo. |
-| `ERRO_LICENCA_MAQUINA` | A licença já está em 2 Macs. Explique e oriente a falar com o suporte para liberar. |
+| `ERRO_LICENCA_MAQUINA` | A licença já está em 2 Macs. Explique e oriente a chamar o suporte no WhatsApp (31) 97131-5886 para liberar. |
 | `ERRO_LICENCA_REEMBOLSADA`, `_CANCELADA`, `_EXPIRADA`, `_SUSPENSA` | Mostre a mensagem do servidor, que diz o que fazer. |
 | `ERRO_LICENCA_INTERNET` | Sem conexão com o servidor de licença: confira a internet. |
 
@@ -105,6 +105,8 @@ Cada passo termina em `PASSO_OK <passo>` quando deu certo.
 | `ERRO_TESTE` | Leia a linha `TRANSCRICAO` (o que o Corta entendeu) e o fim de `~/Library/Logs/Corta/instalacao.log`. Explique em uma frase e proponha a correção. |
 
 O registro completo da instalação fica em `~/Library/Logs/Corta/instalacao.log`.
+
+Se a pessoa travar e você não conseguir resolver, passe o passo a passo com imagens (https://corta-site.marcostulio.workers.dev/instalar/) e o WhatsApp do suporte: (31) 97131-5886.
 
 ## 6. Concluir
 

@@ -2,6 +2,8 @@
 
 O Corta baixa, transcreve, traduz e corta vídeos no seu Mac. Ele abre uma tela no navegador e o Claude cuida da instalação para você. A instalação leva de 10 a 20 minutos, e você só faz isso uma vez.
 
+**Prefere ver com imagens?** Acesse o passo a passo em **corta-site.marcostulio.workers.dev/instalar**. Travou em algum passo? Chame no WhatsApp: **(31) 97131-5886**.
+
 ---
 
 ## Antes de começar
@@ -55,7 +57,7 @@ O Claude pede o e-mail e o código, ativa a sua licença neste Mac, baixa o prog
 
 **Se o seu Mac não tiver o Homebrew** (a base que instala as ferramentas de vídeo), o Claude vai pedir que você cole um comando no Terminal e digite a senha do Mac. As letras da senha não aparecem enquanto você digita, e isso é normal. É a única vez que você digita algo fora do Claude.
 
-**A licença vale em até 2 Macs.** Para trocar de computador, fale com o suporte.
+**A licença vale em até 2 Macs.** Para trocar de computador, chame no WhatsApp: (31) 97131-5886.
 
 ---
 
