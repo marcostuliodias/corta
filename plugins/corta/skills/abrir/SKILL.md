@@ -15,6 +15,14 @@ Rode o script que fica em `scripts/abrir.sh` na raiz do plugin, dois níveis aci
 bash "<pasta desta skill>/../../scripts/abrir.sh"
 ```
 
+**No Windows**, os scripts são `.ps1` com o mesmo nome e respondem com as mesmas linhas. Troque `bash "<script>.sh"` por:
+
+```bash
+powershell -NoProfile -ExecutionPolicy Bypass -File "<pasta do script>/<script>.ps1"
+```
+
+Para saber o sistema: se `uname -s` mostrar `Darwin`, é Mac; se mostrar `MINGW`, `MSYS` ou `CYGWIN`, ou se não houver `uname`, é Windows.
+
 Na primeira vez pode levar até um minuto, porque o Python e as bibliotecas são baixados. Avise a pessoa antes de rodar.
 
 ## O que fazer com a resposta
@@ -27,8 +35,8 @@ Leia a **última linha** da saída:
 | `JA_RODANDO <url>` | "O Corta já estava aberto; abri a aba de novo." |
 | `ERRO_FALTA_UV` | O Corta ainda não foi instalado. Diga isso e siga a skill `instalar`. |
 | `ERRO_FALTA_PACOTE` | O programa do Corta ainda não foi baixado (ou a licença não foi ativada). Siga a skill `instalar`. |
-| `ERRO_PORTA_OCUPADA` | Outro programa está usando a porta 4747. Pergunte se pode tentar em outra porta e rode de novo com `CORTA_PORTA=4748`. |
+| `ERRO_PORTA_OCUPADA` | Outro programa está usando a porta 4747. Pergunte se pode tentar em outra porta e rode de novo com `CORTA_PORTA=4748` (no Windows: `$env:CORTA_PORTA=4748` antes do script, no mesmo comando do PowerShell). |
 | `ERRO_PREPARAR_AMBIENTE` | O download das bibliotecas falhou. Confira a internet, leia as linhas de erro acima e tente de novo. |
-| `ERRO_SERVIDOR_CAIU` ou `ERRO_SERVIDOR_NAO_RESPONDEU` | Leia as linhas do log que o script mostrou, explique o problema em uma frase e proponha a correção. O log completo fica em `~/Library/Logs/Corta/servidor.log`. |
+| `ERRO_SERVIDOR_CAIU` ou `ERRO_SERVIDOR_NAO_RESPONDEU` | Leia as linhas do log que o script mostrou, explique o problema em uma frase e proponha a correção. O log completo fica em `~/Library/Logs/Corta/servidor.log` (Mac) ou `%LOCALAPPDATA%\Corta\logs\servidor.log` (Windows). |
 
 Para fechar o Corta, use a skill `parar`.

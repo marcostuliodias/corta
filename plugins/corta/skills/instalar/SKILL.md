@@ -1,6 +1,6 @@
 ---
 name: instalar
-description: "Use SEMPRE que a pessoa pedir para instalar, ativar ou configurar o Corta ('instala o Corta', 'ativa o Corta', 'ativar a licença do Corta', 'configura o Corta', 'primeira vez usando o Corta', 'comprei o Corta', '/corta:instalar') ou quando outra skill do Corta responder ERRO_FALTA_UV, ERRO_FALTA_PACOTE ou pedir para ativar. Ativa a licença com o e-mail e o código da compra, baixa o programa, confere o Mac e instala o que faltar, com autorização, e testa a transcrição. Para só conferir o estado do Corta, use a skill ajuda."
+description: "Use SEMPRE que a pessoa pedir para instalar, ativar ou configurar o Corta ('instala o Corta', 'ativa o Corta', 'ativar a licença do Corta', 'configura o Corta', 'primeira vez usando o Corta', 'comprei o Corta', '/corta:instalar') ou quando outra skill do Corta responder ERRO_FALTA_UV, ERRO_FALTA_PACOTE ou pedir para ativar. Ativa a licença com o e-mail e o código da compra, baixa o programa, confere o computador (Mac ou Windows) e instala o que faltar, com autorização, e testa a transcrição. Para só conferir o estado do Corta, use a skill ajuda."
 ---
 
 # Instalar o Corta
@@ -14,6 +14,23 @@ S="<pasta desta skill>/../../scripts"
 ```
 
 Todos os scripts podem rodar quantas vezes for preciso: eles pulam o que já está instalado.
+
+### Mac ou Windows
+
+Confira o sistema com `uname -s`: `Darwin` é Mac; `MINGW`, `MSYS`, `CYGWIN` ou sem `uname` é Windows.
+
+**No Windows**, os scripts são `.ps1` com o mesmo nome e respondem com as mesmas linhas. Em todo comando desta skill, troque `bash "$S/<script>.sh" …` por:
+
+```bash
+powershell -NoProfile -ExecutionPolicy Bypass -File "$S/<script>.ps1" …
+```
+
+Diferenças no Windows:
+- **Não existe o passo do Homebrew** (passo 4): o `ferramentas` baixa tudo sozinho, sem pedir senha de administrador.
+- **Há um passo a mais, `nvidia`**, entre `ambiente` e `modelo`. Com placa NVIDIA ele baixa as bibliotecas para transcrever com ela (uns 1,5 GB); sem placa, só confirma e segue.
+- `INCOMPATIVEL processador`: o Corta precisa de Windows 64 bits com processador Intel ou AMD (não funciona em Windows ARM). `INCOMPATIVEL windows`: precisa do Windows 10 ou 11.
+- `AVISO nvidia`: o computador não tem placa NVIDIA. Avise com calma que a transcrição vai usar o processador e fica mais lenta (uma live de 1 hora pode levar mais de 1 hora). Não é erro.
+- O registro da instalação fica em `%LOCALAPPDATA%\Corta\logs\instalacao.log`.
 
 ## 1. Conferir o computador
 
@@ -45,7 +62,7 @@ bash "$S/instalar.sh" licenca "<email>" "<código>"
 |---|---|
 | `PASSO_OK licenca` | Siga em frente. |
 | `ERRO_LICENCA_NAO_ENCONTRADA` | Mostre a mensagem e peça para conferir o e-mail e o código. Se a compra acabou de ser feita, espere 2 minutos e tente de novo. |
-| `ERRO_LICENCA_MAQUINA` | A licença já está em 2 Macs. Explique e oriente a chamar o suporte no WhatsApp (31) 97131-5886 para liberar. |
+| `ERRO_LICENCA_MAQUINA` | A licença já está em 2 computadores. Explique e oriente a chamar o suporte no WhatsApp (31) 97131-5886 para liberar. |
 | `ERRO_LICENCA_REEMBOLSADA`, `_CANCELADA`, `_EXPIRADA`, `_SUSPENSA` | Mostre a mensagem do servidor, que diz o que fazer. |
 | `ERRO_LICENCA_INTERNET` | Sem conexão com o servidor de licença: confira a internet. |
 
@@ -84,8 +101,10 @@ bash "$S/instalar.sh" ferramentas   # ferramentas de vídeo e o uv (2 a 5 min)
 bash "$S/instalar.sh" pacote        # o programa do Corta, baixado com a licença (alguns segundos)
 bash "$S/instalar.sh" ambiente      # Python e bibliotecas (1 a 3 min)
 bash "$S/instalar.sh" modelo        # programa que transcreve, 1,6 GB (3 a 10 min)
-bash "$S/instalar.sh" teste         # o Mac fala uma frase e o Corta transcreve
+bash "$S/instalar.sh" teste         # o computador fala uma frase e o Corta transcreve
 ```
+
+No Windows a ordem é `ferramentas`, `pacote`, `ambiente`, `nvidia`, `modelo`, `teste`.
 
 Cada passo termina em `PASSO_OK <passo>` quando deu certo.
 
@@ -101,6 +120,7 @@ Cada passo termina em `PASSO_OK <passo>` quando deu certo.
 | `ERRO_PACOTE_DOWNLOAD` ou `ERRO_PACOTE_INCOMPLETO` | A internet caiu: rode `pacote` de novo. |
 | `ERRO_HOMEBREW` | Leia as linhas acima do erro. Se falar de permissão ou de "Command Line Tools", peça para a pessoa rodar `brew doctor` no Terminal e colar o resultado aqui. |
 | `ERRO_AMBIENTE` | Quase sempre é internet. Confira e rode o passo de novo. |
+| `ERRO_DOWNLOAD_FERRAMENTAS` ou `ERRO_FFMPEG` (Windows) | Internet caiu ou o antivírus bloqueou o download. Rode `ferramentas` de novo; se repetir, peça para a pessoa liberar a pasta `%LOCALAPPDATA%\Corta` no antivírus. |
 | `ERRO_DOWNLOAD` ou `ERRO_MODELO` | Internet caiu ou falta espaço. Rode `modelo` de novo. |
 | `ERRO_TESTE` | Leia a linha `TRANSCRICAO` (o que o Corta entendeu) e o fim de `~/Library/Logs/Corta/instalacao.log`. Explique em uma frase e proponha a correção. |
 

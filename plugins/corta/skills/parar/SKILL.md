@@ -13,6 +13,14 @@ Rode:
 bash "<pasta desta skill>/../../scripts/parar.sh"
 ```
 
+**No Windows**, os scripts são `.ps1` com o mesmo nome e respondem com as mesmas linhas. Troque `bash "<script>.sh"` por:
+
+```bash
+powershell -NoProfile -ExecutionPolicy Bypass -File "<pasta do script>/<script>.ps1"
+```
+
+Para saber o sistema: se `uname -s` mostrar `Darwin`, é Mac; se mostrar `MINGW`, `MSYS` ou `CYGWIN`, ou se não houver `uname`, é Windows.
+
 Leia a última linha:
 
 | Última linha | O que dizer |
