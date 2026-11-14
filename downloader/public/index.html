@@ -89,7 +89,6 @@ $("keybox").addEventListener("submit", (e) => {
 
 $("f").addEventListener("submit", async (e) => {
   e.preventDefault();
-  if (!key) return askKey("Digite a senha de acesso.");
   const mode = document.querySelector('input[name=mode]:checked').value;
   busy(true); setBar(0); setMsg("Iniciando… (na primeira vez do dia pode levar alguns segundos)");
   try {
@@ -110,7 +109,6 @@ $("f").addEventListener("submit", async (e) => {
   } finally { busy(false); }
 });
 
-if (!key) askKey("Digite a senha de acesso para começar.");
 </script>
 </body>
 </html>

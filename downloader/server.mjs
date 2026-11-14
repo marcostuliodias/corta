@@ -14,7 +14,7 @@ const TTL_MS = 30 * 60 * 1000;
 const jobs = new Map(); // id -> { state, percent, error, dir, file, created }
 
 const ACCESS_KEY = process.env.ACCESS_KEY || "";
-if (!ACCESS_KEY) { console.error("Defina ACCESS_KEY (a senha de acesso)."); process.exit(1); }
+if (!ACCESS_KEY) console.warn("ATENÇÃO: sem ACCESS_KEY, qualquer pessoa com o endereço pode usar. Defina uma senha no .env antes de divulgar.");
 const INDEX_HTML = await readFile(new URL("./public/index.html", import.meta.url));
 
 // cookies opcionais (Instagram/Stories, YouTube): coloque em ./cookies/cookies.txt
@@ -25,6 +25,7 @@ const cookiesFile = existsSync(COOKIES_PATH) ? COOKIES_PATH : null;
 const fails = new Map();
 function clientIp(req) { return (req.headers["x-forwarded-for"] || req.socket.remoteAddress || "").split(",")[0].trim(); }
 function keyOk(req, url) {
+  if (!ACCESS_KEY) return true; // modo teste: sem senha
   const ip = clientIp(req);
   const now = Date.now();
   const f = (fails.get(ip) || []).filter((t) => now - t < 15 * 60_000);

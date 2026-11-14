@@ -3,7 +3,7 @@ services:
     build: .
     restart: unless-stopped
     environment:
-      ACCESS_KEY: ${ACCESS_KEY:?defina ACCESS_KEY no arquivo .env}
+      ACCESS_KEY: ${ACCESS_KEY:-}
     volumes:
       - ./cookies:/data:ro   # opcional: cookies/cookies.txt
     expose:
