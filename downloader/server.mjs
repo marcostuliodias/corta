@@ -3,19 +3,37 @@
 import http from "node:http";
 import { spawn } from "node:child_process";
 import { createReadStream } from "node:fs";
-import { mkdtemp, readdir, rm, stat, writeFile } from "node:fs/promises";
+import { mkdtemp, readdir, readFile, rm, stat } from "node:fs/promises";
+import { existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
-import { randomUUID } from "node:crypto";
+import { randomUUID, timingSafeEqual } from "node:crypto";
 
 const PORT = Number(process.env.PORT || 8080);
 const TTL_MS = 30 * 60 * 1000;
 const jobs = new Map(); // id -> { state, percent, error, dir, file, created }
 
-let cookiesFile = null;
-if (process.env.YTDLP_COOKIES) {
-  cookiesFile = path.join(tmpdir(), "cookies.txt");
-  await writeFile(cookiesFile, process.env.YTDLP_COOKIES, { mode: 0o600 });
+const ACCESS_KEY = process.env.ACCESS_KEY || "";
+if (!ACCESS_KEY) { console.error("Defina ACCESS_KEY (a senha de acesso)."); process.exit(1); }
+const INDEX_HTML = await readFile(new URL("./public/index.html", import.meta.url));
+
+// cookies opcionais (Instagram/Stories, YouTube): coloque em ./cookies/cookies.txt
+const COOKIES_PATH = "/data/cookies.txt";
+const cookiesFile = existsSync(COOKIES_PATH) ? COOKIES_PATH : null;
+
+// trava simples contra tentativas de senha: 10 erros por IP a cada 15 min
+const fails = new Map();
+function clientIp(req) { return (req.headers["x-forwarded-for"] || req.socket.remoteAddress || "").split(",")[0].trim(); }
+function keyOk(req, url) {
+  const ip = clientIp(req);
+  const now = Date.now();
+  const f = (fails.get(ip) || []).filter((t) => now - t < 15 * 60_000);
+  if (f.length >= 10) return "limit";
+  const given = String(req.headers["x-key"] || url.searchParams.get("key") || "");
+  const a = Buffer.from(given), b = Buffer.from(ACCESS_KEY);
+  if (a.length === b.length && timingSafeEqual(a, b)) return true;
+  fails.set(ip, [...f, now]);
+  return false;
 }
 
 function json(res, code, body) {
@@ -122,11 +140,21 @@ setInterval(() => {
 const server = http.createServer(async (req, res) => {
   try {
     const url = new URL(req.url, "http://x");
-    const parts = url.pathname.split("/").filter(Boolean);
 
-    if (req.method === "GET" && url.pathname === "/health") return json(res, 200, { ok: true });
+    if (req.method === "GET" && (url.pathname === "/" || url.pathname === "/index.html")) {
+      res.writeHead(200, { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" });
+      return res.end(INDEX_HTML);
+    }
+    if (!url.pathname.startsWith("/api/")) return json(res, 404, { error: "Não encontrado." });
 
-    if (req.method === "POST" && url.pathname === "/start") {
+    const ok = keyOk(req, url);
+    if (ok === "limit") return json(res, 429, { error: "Muitas tentativas. Espere 15 minutos." });
+    if (!ok) return json(res, 401, { error: "Senha incorreta." });
+
+    const apiPath = url.pathname.slice(4); // /api/start -> /start
+    const parts = apiPath.split("/").filter(Boolean);
+
+    if (req.method === "POST" && apiPath === "/start") {
       const { url: link, mode } = JSON.parse((await readBody(req)) || "{}");
       let u;
       try { u = new URL(link); } catch { return json(res, 400, { error: "Link inválido." }); }
@@ -169,4 +197,4 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-server.listen(PORT, () => console.log("baixador no ar na porta", PORT));
+server.listen(PORT, "0.0.0.0", () => console.log("baixador no ar na porta", PORT));
