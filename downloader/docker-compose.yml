@@ -6,11 +6,13 @@ services:
       ACCESS_KEY: ${ACCESS_KEY:-}
     volumes:
       - ./cookies:/data:ro   # opcional: cookies/cookies.txt
-    expose:
-      - "8080"
+    ports:
+      - "8787:8080"   # teste: http://IP-DA-VPS:8787
 
+  # HTTPS com domínio (opcional): docker compose --profile https up -d
   caddy:
     image: caddy:2
+    profiles: ["https"]
     restart: unless-stopped
     ports:
       - "80:80"

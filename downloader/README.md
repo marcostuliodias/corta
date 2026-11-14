@@ -20,7 +20,7 @@ nano .env                 # troque ACCESS_KEY e, se tiver, DOMAIN
 docker compose up -d --build
 ```
 
-Abra o endereço no navegador, digite a senha e use. Se o repositório for privado, o `git clone` pede login do GitHub (use um token de acesso).
+Abra `http://IP-DA-VPS:8787` no navegador (modo teste, direto na porta 8787). Com domínio e HTTPS: `docker compose --profile https up -d` (precisa das portas 80 e 443 livres). Se o repositório for privado, o `git clone` pede login do GitHub (use um token de acesso).
 
 ## Stories e conteúdo que exige login (Instagram etc.)
 
