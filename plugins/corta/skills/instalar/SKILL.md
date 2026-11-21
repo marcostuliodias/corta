@@ -126,7 +126,7 @@ Cada passo termina em `PASSO_OK <passo>` quando deu certo.
 
 O registro completo da instalação fica em `~/Library/Logs/Corta/instalacao.log`.
 
-Se a pessoa travar e você não conseguir resolver, passe o passo a passo com imagens (https://corta-site.marcostulio.workers.dev/instalar/) e o WhatsApp do suporte: (31) 97131-5886.
+Se a pessoa travar e você não conseguir resolver, passe o passo a passo com imagens (https://corta.maquinadevideos.app/instalar/) e o WhatsApp do suporte: (31) 97131-5886.
 
 ## 6. Concluir
 
